@@ -35,7 +35,7 @@ it('builds the correct API query URL', function () {
 });
 
 it('retrieves all crypto prices from the repository', function () {
-    $this->repo->shouldReceive('getAll')->once()->andReturn([1, 2]);
+    $this->repo->shouldReceive('getLatestRecordsGroupedByExchange')->once()->andReturn([1, 2]);
     expect($this->service->getCryptoPrices())->toBe([1, 2]);
 });
 

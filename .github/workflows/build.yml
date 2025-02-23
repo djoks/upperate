@@ -12,22 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: secret
-          MYSQL_DATABASE: upperate
-          MYSQL_USER: root
-          MYSQL_PASSWORD: secret
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping --silent"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -36,22 +20,23 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.4"
-          extensions: mbstring, xml, pdo_mysql, bcmath
+          extensions: mbstring, xml, pdo_sqlite, bcmath, sqlite3
+          coverage: none
 
       - name: Install Composer Dependencies
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Configure Database
+      - name: Configure Environment
         run: |
-          sed -i 's/DB_DATABASE=.*/DB_DATABASE=upperate/' .env
-          sed -i 's/DB_USERNAME=.*/DB_USERNAME=root/' .env
-          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=secret/' .env
+          cp .env.example .env
+          echo "DB_CONNECTION=sqlite" >> .env
+          echo "DB_DATABASE=:memory:" >> .env
+          echo "CACHE_DRIVER=array" >> .env
+          echo "SESSION_DRIVER=array" >> .env
+          echo "QUEUE_DRIVER=sync" >> .env
 
       - name: Generate Application Key
         run: php artisan key:generate
-
-      - name: Run Migrations
-        run: php artisan migrate --force
 
       - name: Run Tests
         run: php artisan test --env=testing --no-interaction --verbose
