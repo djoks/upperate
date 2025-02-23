@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Services\CryptoPriceService;
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\CryptoPriceRepository;
+use App\Contracts\CryptoPriceServiceContract;
+use App\Contracts\CryptoPriceRepositoryContract;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,7 +15,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(CryptoPriceRepositoryContract::class, CryptoPriceRepository::class);
+        $this->app->bind(CryptoPriceServiceContract::class, CryptoPriceService::class);
     }
 
     /**
