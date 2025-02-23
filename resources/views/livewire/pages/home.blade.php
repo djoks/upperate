@@ -5,7 +5,12 @@ use Illuminate\Support\Carbon;
 ?>
 
 <div>
-
+    <x-header>
+        <x-slot name="title" class="text-xl">Home: Upperate Crypto Exchange</x-slot>
+        <x-slot name="actions">
+            <livewire:digital-clock />
+        </x-slot>
+    </x-header>
 
     <!-- TABLE  -->
     <x-card>
