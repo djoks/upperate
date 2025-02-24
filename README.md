@@ -49,8 +49,8 @@ cd upperate
 Make the script executable and run it:
 
 ```bash
-chmod +x setup.sh
-./setup.sh
+chmod +x run.sh
+./run.sh
 ```
 
 This script will:
@@ -176,7 +176,7 @@ This approach not only enhances maintainability and scalability but also ensures
 ## Known Issues, Limitations and Improvements
 
 -   **Port Conflicts:** Occasionally, Docker may conflict with existing services. Manual port reassignments might be necessary.
--   **Real-Time Reliability:** The WebSocket connection doesn't work as expected. Monitoring and reconnection strategies could be improved.
+-   **Real-Time Reliability:** Monitoring and reconnection strategies could be improved.
 -   **Future Improvements:** Additional test coverage, enhanced logging, and optimisation of container startup times are planned.
 
 ---
@@ -251,7 +251,7 @@ Below is a brief overview of the key project directories:
 /upperate/
 ├── .env.example
 ├── README.md
-├── setup.sh
+├── run.sh
 ├── app/
 ├── config/
 ├── database/
@@ -277,13 +277,13 @@ Ensure a Compatible Shell:
 -   Make the Script Executable:
 
 ```bash
-chmod +x setup.sh
+chmod +x run.sh
 ```
 
 Run the Script:
 
 ```bash
-./setup.sh
+./run.sh
 ```
 
 What the Script Does:
