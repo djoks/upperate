@@ -5,7 +5,7 @@
                 <img src="{{ asset('assets/logos/app.png') }}" alt="Upperate Logo" class="h-10 w-10">
                 <div class="flex flex-col">
                     <span>Upperate Crypto Exchange</span>
-                    <span class="text-xs font-light text-green-600 dark:text-amber-500">Currently viewing ({{ count($exchanges) }}) Exchanges</span>
+                    <span class="text-xs font-light text-green-600 dark:text-amber-500">Currently viewing ({{ count($exchanges) }}) exchanges</span>
                 </div>
             </div>
         </x-slot>
