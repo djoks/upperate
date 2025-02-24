@@ -48,7 +48,7 @@ it('fetches API data successfully', function () {
     $method = $reflection->getMethod('fetchApiData');
     $method->setAccessible(true);
     $data = $method->invokeArgs($this->service, [
-        'https://api.freecryptoapi.com/v1/getData?symbol=BTCUSDC+BTCUSDT+BTCETH@binance'
+        'https://api.freecryptoapi.com/v1/getData?symbol=BTCUSDC+BTCUSDT+BTCETH@binance',
     ]);
     expect($data)->toBe(['status' => 'success', 'symbols' => []]);
 });
@@ -61,7 +61,7 @@ it('processes API response and saves new record when price changes', function ()
         'daily_change_percentage' => 5,
     ];
 
-    $lastRecord = new CryptoPrice();
+    $lastRecord = new CryptoPrice;
     $lastRecord->average_price = 160;
     $lastRecord->price_change = 2;
 
@@ -97,7 +97,7 @@ it('skips saving when no price change is detected', function () {
         'daily_change_percentage' => 5,
     ];
 
-    $lastRecord = new CryptoPrice();
+    $lastRecord = new CryptoPrice;
     $lastRecord->average_price = 150;
     $lastRecord->price_change = 5;
 

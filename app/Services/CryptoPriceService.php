@@ -2,21 +2,19 @@
 
 namespace App\Services;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Promise\Utils;
-use App\Events\CryptoPriceUpdated;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
-use GuzzleHttp\Promise\PromiseInterface;
-use App\Contracts\CryptoPriceServiceContract;
 use App\Contracts\CryptoPriceRepositoryContract;
+use App\Contracts\CryptoPriceServiceContract;
+use App\Events\CryptoPriceUpdated;
+use GuzzleHttp\Client;
+use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Promise\Utils;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class CryptoPriceService
  *
  * Service responsible for fetching and processing cryptocurrency price data.
- *
- * @package App\Services
  */
 class CryptoPriceService implements CryptoPriceServiceContract
 {
@@ -53,7 +51,7 @@ class CryptoPriceService implements CryptoPriceServiceContract
     /**
      * CryptoPriceService constructor.
      *
-     * @param CryptoPriceRepositoryContract $repo Repository instance injected.
+     * @param  CryptoPriceRepositoryContract  $repo  Repository instance injected.
      */
     public function __construct(CryptoPriceRepositoryContract $repo)
     {
@@ -61,8 +59,8 @@ class CryptoPriceService implements CryptoPriceServiceContract
         $this->pairs = config('crypto.pairs', []);
         $this->exchanges = config('crypto.exchanges', []);
         $this->api = config('crypto.apis.default');
-        $this->apiUrl = config('crypto.apis.' . $this->api . '.api_url');
-        $this->apiKey = config('crypto.apis.' . $this->api . '.api_key');
+        $this->apiUrl = config('crypto.apis.'.$this->api.'.api_url');
+        $this->apiKey = config('crypto.apis.'.$this->api.'.api_key');
     }
 
     /**
@@ -70,13 +68,14 @@ class CryptoPriceService implements CryptoPriceServiceContract
      *
      * Calculates the mean of the 'lowest' and 'highest' price values provided in the data array.
      *
-     * @param array $data Array containing at least the 'lowest' and 'highest' keys.
+     * @param  array  $data  Array containing at least the 'lowest' and 'highest' keys.
      * @return float The computed average price.
      */
     public function computeAveragePrice(array $data): float
     {
-        $lowest  = (float) $data['lowest'];
+        $lowest = (float) $data['lowest'];
         $highest = (float) $data['highest'];
+
         return ($lowest + $highest) / 2;
     }
 
@@ -119,13 +118,13 @@ class CryptoPriceService implements CryptoPriceServiceContract
      * For example:
      *   https://api.freecryptoapi.com/v1/getData?symbol=ETHBTC+BTCUSDC@huobi
      *
-     * @param string $pair The pair identifier.
-     * @param string $exchange The exchange identifier.
+     * @param  string  $pair  The pair identifier.
+     * @param  string  $exchange  The exchange identifier.
      * @return string The complete API URL for fetching data.
      */
     public function buildApiQuery(string $pair, string $exchange): string
     {
-        return $this->apiUrl . '/getData?symbol=' . $pair . '@' . $exchange;
+        return $this->apiUrl.'/getData?symbol='.$pair.'@'.$exchange;
     }
 
     /**
@@ -134,7 +133,7 @@ class CryptoPriceService implements CryptoPriceServiceContract
      * Sends an HTTP GET request to the provided URL and returns the JSON response as an associative array
      * if the request is successful; otherwise, returns null.
      *
-     * @param string $url The API URL.
+     * @param  string  $url  The API URL.
      * @return array|null The response data or null if the request was unsuccessful.
      */
     protected function fetchApiData(string $url): ?array
@@ -151,9 +150,8 @@ class CryptoPriceService implements CryptoPriceServiceContract
      * iterates over each symbol's data and processes it via compareAndSave().
      * Otherwise, logs a warning.
      *
-     * @param array $data The API response data.
-     * @param string $exchange The exchange identifier.
-     * @return void
+     * @param  array  $data  The API response data.
+     * @param  string  $exchange  The exchange identifier.
      */
     protected function processApiResponse(array $data, string $exchange): void
     {
@@ -168,27 +166,27 @@ class CryptoPriceService implements CryptoPriceServiceContract
 
     /**
      * Asynchronously fetch API data using Guzzle.
-     *
-     * @param string $url
-     * @return PromiseInterface
      */
     protected function fetchApiDataAsync(string $url): PromiseInterface
     {
-        $client = new Client();
+        $client = new Client;
 
         return $client->getAsync($url, [
-            'headers' => ['Authorization' => 'Bearer ' . $this->apiKey]
+            'headers' => ['Authorization' => 'Bearer '.$this->apiKey],
         ])
             ->then(function (\Psr\Http\Message\ResponseInterface $response) {
                 if ($response->getStatusCode() !== 200) {
-                    Log::error("Received non-200 response: " . $response->getStatusCode());
+                    Log::error('Received non-200 response: '.$response->getStatusCode());
+
                     return null;
                 }
                 $body = $response->getBody()->getContents();
+
                 return json_decode($body, true);
             })
             ->otherwise(function (\Exception $e) {
-                Log::error("Async API call failed: " . $e->getMessage());
+                Log::error('Async API call failed: '.$e->getMessage());
+
                 return null;
             });
     }
@@ -202,8 +200,6 @@ class CryptoPriceService implements CryptoPriceServiceContract
      * - Processes the API response.
      *
      * If data fetching fails, an error is logged.
-     *
-     * @return void
      */
     public function fetchAndSaveCryptoPrices(): void
     {
@@ -234,10 +230,9 @@ class CryptoPriceService implements CryptoPriceServiceContract
      * If there is a difference, calculates the price change and determines the change direction
      * (either 'upward' or 'downward') before saving the new record.
      *
-     * @param array $data The symbol data from the API, including 'symbol', 'lowest', 'highest',
-     *                    and 'daily_change_percentage'.
-     * @param string $exchange The exchange identifier.
-     * @return void
+     * @param  array  $data  The symbol data from the API, including 'symbol', 'lowest', 'highest',
+     *                       and 'daily_change_percentage'.
+     * @param  string  $exchange  The exchange identifier.
      */
     protected function compareAndSave(array $data, string $exchange): void
     {

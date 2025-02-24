@@ -9,7 +9,7 @@ interface CryptoPriceRepositoryContract
     /**
      * Retrieve a CryptoPrice record by its unique identifier.
      *
-     * @param int $id The unique identifier of the CryptoPrice record.
+     * @param  int  $id  The unique identifier of the CryptoPrice record.
      * @return CryptoPrice|null The CryptoPrice record, or null if not found.
      */
     public function findById(int $id): ?CryptoPrice;
@@ -31,16 +31,16 @@ interface CryptoPriceRepositoryContract
      * 3. Groups the resulting records by exchange.
      *
      * @return array An array of groups, each containing:
-     * - 'exchange': The exchange name.
-     * - 'prices': An array of the latest CryptoPrice records for that exchange.
+     *               - 'exchange': The exchange name.
+     *               - 'prices': An array of the latest CryptoPrice records for that exchange.
      */
     public function getLatestRecordsGroupedByExchange(): array;
 
     /**
      * Retrieve the last known CryptoPrice record for a specified cryptocurrency pair and exchange.
      *
-     * @param string $pair The cryptocurrency pair (e.g., "BTCUSDC").
-     * @param string $exchange The exchange name (e.g., "binance").
+     * @param  string  $pair  The cryptocurrency pair (e.g., "BTCUSDC").
+     * @param  string  $exchange  The exchange name (e.g., "binance").
      * @return CryptoPrice|null The latest CryptoPrice record for the specified pair and exchange, or null if not found.
      */
     public function getLastKnownPrice(string $pair, string $exchange): ?CryptoPrice;
@@ -57,7 +57,7 @@ interface CryptoPriceRepositoryContract
      * - 'created_at': Timestamp for record creation.
      * - 'updated_at': Timestamp for record update.
      *
-     * @param array $data An associative array of CryptoPrice record data.
+     * @param  array  $data  An associative array of CryptoPrice record data.
      * @return CryptoPrice The newly created CryptoPrice record.
      */
     public function save(array $data): CryptoPrice;

@@ -2,16 +2,11 @@
 
 namespace App\Events;
 
-use Illuminate\Log\Logger;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Broadcasting\Channel;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class CryptoPriceUpdated implements ShouldBroadcast
 {
@@ -41,7 +36,7 @@ class CryptoPriceUpdated implements ShouldBroadcast
 
     /**
      * Get the data to broadcast.
-     * 
+     *
      * @return array<string, mixed>
      */
     public function broadcastWith(): array

@@ -2,13 +2,15 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use Livewire\Attributes\On;
+use Livewire\Component;
 
 class PriceChange extends Component
 {
     public $id;
+
     public $price = [];
+
     public $change;
 
     #[On('echo:prices,CryptoPriceUpdated')]
@@ -19,14 +21,14 @@ class PriceChange extends Component
         }
 
         $this->change = $eventData['price_change'];
-        $this->dispatch('change-updated-' . $this->id, ['newChange' => $eventData['price_change']])->self();
+        $this->dispatch('change-updated-'.$this->id, ['newChange' => $eventData['price_change']])->self();
     }
 
     public function mount($price)
     {
         $this->price = $price;
         $this->change = $price['price_change'];
-        $this->id = uniqId();
+        $this->id = uniqid();
     }
 
     public function render()

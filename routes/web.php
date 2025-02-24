@@ -1,8 +1,8 @@
 <?php
 
 use App\Livewire\Pages\HomePage;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,8 +32,8 @@ Route::get('/broadcast', function (Request $request) {
     $changeDirection = $priceChange >= 0 ? 'upward' : 'downward';
 
     $data = [
-        'pair' => $request->get('pair', "BTCUSDC"),
-        'exchange' => $request->get('exchange', "binance"),
+        'pair' => $request->get('pair', 'BTCUSDC'),
+        'exchange' => $request->get('exchange', 'binance'),
         'average_price' => $averagePrice,
         'price_change' => $priceChange,
         'change_direction' => $changeDirection,

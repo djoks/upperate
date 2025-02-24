@@ -2,9 +2,9 @@
 
 namespace App\Jobs;
 
-use Illuminate\Foundation\Queue\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Contracts\CryptoPriceServiceContract;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Queue\Queueable;
 
 class FetchCryptoPrices implements ShouldQueue
 {

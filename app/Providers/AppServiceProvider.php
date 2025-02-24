@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
+use App\Contracts\CryptoPriceRepositoryContract;
+use App\Contracts\CryptoPriceServiceContract;
+use App\Repositories\CryptoPriceRepository;
 use App\Services\CryptoPriceService;
 use Illuminate\Support\ServiceProvider;
-use App\Repositories\CryptoPriceRepository;
-use App\Contracts\CryptoPriceServiceContract;
-use App\Contracts\CryptoPriceRepositoryContract;
 
 class AppServiceProvider extends ServiceProvider
 {

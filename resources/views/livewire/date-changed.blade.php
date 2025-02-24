@@ -3,26 +3,25 @@
 </div>
 
 @script
-<script>
-    Alpine.data('DateChanged', (id, value) => {
-        return {
-            id: id
-            , date: value
-            , dateDisplay: ''
-            , init() {
-                setInterval(() => {
+    <script>
+        Alpine.data('DateChanged', (id, value) => {
+            return {
+                id: id,
+                date: value,
+                dateDisplay: '',
+                init() {
+                    setInterval(() => {
+                        this.dateDisplay = moment(this.date).fromNow();
+                        this.$refs.date.innerText = this.dateDisplay;
+                    }, 1000);
+                },
+                updateDate(val) {
+                    this.date = val || 0;
                     this.dateDisplay = moment(this.date).fromNow();
                     this.$refs.date.innerText = this.dateDisplay;
-                }, 1000);
-            }
-            , updateDate(val) {
-                this.date = val || 0;
-                this.dateDisplay = moment(this.date).fromNow();
-                this.$refs.date.innerText = this.dateDisplay;
-            }
+                }
 
-        }
-    })
-
-</script>
+            }
+        })
+    </script>
 @endscript

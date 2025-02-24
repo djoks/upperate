@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Jobs\FetchCryptoPrices;
+use Illuminate\Console\Command;
 
 class CryptoPriceAggregatorCommand extends Command
 {
@@ -45,7 +45,7 @@ class CryptoPriceAggregatorCommand extends Command
 
         $interval = config('crypto.interval', 5);
 
-        while (!$this->stop) {
+        while (! $this->stop) {
             FetchCryptoPrices::dispatch();
             sleep($interval);
         }

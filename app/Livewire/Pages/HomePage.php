@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Pages;
 
-use Livewire\Component;
 use App\Contracts\CryptoPriceServiceContract;
+use Livewire\Component;
 
 class HomePage extends Component
 {

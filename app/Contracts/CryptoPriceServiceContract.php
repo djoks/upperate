@@ -9,7 +9,7 @@ interface CryptoPriceServiceContract
      *
      * Calculates the mean of the 'lowest' and 'highest' price values provided in the data array.
      *
-     * @param array $data Array containing at least the 'lowest' and 'highest' keys.
+     * @param  array  $data  Array containing at least the 'lowest' and 'highest' keys.
      * @return float The computed average price.
      */
     public function computeAveragePrice(array $data): float;
@@ -44,8 +44,8 @@ interface CryptoPriceServiceContract
      * For example:
      *   https://api.freecryptoapi.com/v1/getData?symbol=ETHBTC+BTCUSDC@huobi
      *
-     * @param string $pair The pair identifier.
-     * @param string $exchange The exchange identifier.
+     * @param  string  $pair  The pair identifier.
+     * @param  string  $exchange  The exchange identifier.
      * @return string The complete API URL for fetching data.
      */
     public function buildApiQuery(string $pair, string $exchange): string;
@@ -56,8 +56,6 @@ interface CryptoPriceServiceContract
      * For the given symbol data, computes the new average price and compares it with the last stored value.
      * If there is a difference, calculates the price change and determines the change direction
      * (either 'upward' or 'downward') before saving the new record.
-     *
-     * @return void
      */
     public function fetchAndSaveCryptoPrices(): void;
 }

@@ -22,7 +22,7 @@ return [
     |
     */
 
-    'pairs'     => explode(',', env('CRYPTO_PAIRS', 'BTCUSDC,BTCUSDT,BTCETH')),
+    'pairs' => explode(',', env('CRYPTO_PAIRS', 'BTCUSDC,BTCUSDT,BTCETH')),
 
     /*
     |--------------------------------------------------------------------------
@@ -34,7 +34,7 @@ return [
     |
     */
 
-    'exchanges' =>  explode(',', env('CRYPTO_EXCHANGES', 'binance,mex,huobi')),
+    'exchanges' => explode(',', env('CRYPTO_EXCHANGES', 'binance,mex,huobi')),
 
     /*
     |--------------------------------------------------------------------------
@@ -46,7 +46,7 @@ return [
     |
     */
 
-    'interval'  => env('CRYPTO_API_FETCH_INTERVAL', 5),
+    'interval' => env('CRYPTO_API_FETCH_INTERVAL', 5),
 
     /*
     |--------------------------------------------------------------------------
@@ -58,11 +58,11 @@ return [
     | Currently supported api services: "freecryptoapi"
     |
     */
-    'apis'  => [
+    'apis' => [
         'default' => env('CRYPTO_DEFAULT_API', 'freecryptoapi'),
         'freecryptoapi' => [
             'api_url' => env('FREE_CRYPTO_API_URL', 'https://api.freecryptoapi.com/v1'),
             'api_key' => env('FREE_CRYPTO_API_KEY', ''),
-        ]
-    ]
+        ],
+    ],
 ];
