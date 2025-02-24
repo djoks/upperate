@@ -20,7 +20,7 @@ Route::get('/update', function () {
     $data = [
         'pair' => "BTCUSDC",
         'exchange' => "binance",
-        'average_price' => 100000,
+        'average_price' => 0,
         'price_change' => 50,
         'change_direction' => "upward",
         'created_at' => now(),
@@ -28,4 +28,5 @@ Route::get('/update', function () {
     ];
 
     event(new App\Events\CryptoPriceUpdated($data));
+    // App\Events\CryptoPriceUpdated::dispatch($data);
 });

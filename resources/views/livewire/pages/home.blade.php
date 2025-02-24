@@ -1,12 +1,6 @@
-<?php
-
-use Illuminate\Support\Carbon;
-
-?>
-
 <div>
     <x-header>
-        <x-slot name="title" class="text-xl">Home: Upperate Crypto Exchange</x-slot>
+        <x-slot name="title" class="text-xl ">Home: Upperate Crypto Exchange</x-slot>
         <x-slot name="actions">
             <livewire:digital-clock />
         </x-slot>
@@ -14,7 +8,8 @@ use Illuminate\Support\Carbon;
 
     <!-- TABLE  -->
     <x-card>
-        <x-table :headers="$headers" :rows="$exchanges" no-headers expandable show-empty-text>
+        <x-table :headers="$headers" :rows="$exchanges" expandable no-headers show-empty-text>
+
             @scope('cell_exchange', $exchanges)
             <div class="flex items-center space-x-2 capitalize">
                 <livewire:exchange-logo :exchange="$exchanges['exchange']" />
@@ -23,24 +18,19 @@ use Illuminate\Support\Carbon;
             @endscope
 
             @scope('expansion', $exchange, $subHeaders)
-            <div class="bg-base-200 p-8 font-bold">
-                <x-table :headers="$subHeaders" :rows="$exchange['prices']" show-empty-text>
+            <div class="bg-base-200 p-8">
+                <x-table :headers="$subHeaders" :rows="$exchange['prices']" show-empty-text :key="uniqid()">
                     @scope('cell_average_price', $price)
-                    <div class="flex items-center">
-                        @if ($price['change_direction'] === 'up')
-                        <img alt="logo" src="{{ asset('assets/icons/up.svg') }}" class="h-4">
-                        @else
-                        <img alt="logo" src="{{ asset('assets/icons/down.svg') }}" class="h-4">
-                        @endif
+                    <livewire:average-price :price="$price" :key="uniqid()" />
+                    @endscope
+                    @scope('cell_price_change', $price)
+                    <livewire:price-change :change="$price['price_change']" :key="uniqid()" />
 
-                        {{ number_format($price['average_price'], 2, '.', ',') }}
-                    </div>
                     @endscope
 
                     @scope('cell_updated_at', $price)
-                    {{ Carbon::parse($price['updated_at'])->diffForHumans() }}
+                    <livewire:time-ago :date="$price['updated_at']" :key="uniqid()" />
                     @endscope
-
                 </x-table>
             </div>
             @endscope

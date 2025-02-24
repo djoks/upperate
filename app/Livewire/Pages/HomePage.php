@@ -9,18 +9,20 @@ class HomePage extends Component
 {
     protected CryptoPriceServiceContract $cryptoPriceService;
 
-    public $headers = [
+    public array $expanded = [0, 1];
+
+    public array $headers = [
         ['key' => 'exchange', 'label' => 'Exchange'],
     ];
 
-    public $subHeaders = [
+    public array $subHeaders = [
         ['key' => 'pair', 'label' => 'Pair'],
         ['key' => 'average_price', 'label' => 'Average Price'],
         ['key' => 'price_change', 'label' => 'Price Change'],
         ['key' => 'updated_at', 'label' => 'Last Update'],
     ];
 
-    public $exchanges = [];
+    public array $exchanges = [];
 
     public function mount()
     {

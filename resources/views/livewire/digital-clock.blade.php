@@ -14,8 +14,8 @@
 
     <x-card class="w-48 rounded-box items-center justify-center">
         <div class="flex space-x-2 items-center text-center">
-            <img src="{{ asset('assets/icons/clock.svg') }}" alt="Clock" class="w-8 h-8 opacity-60">
-            <h2 class="text-xl font-bold" x-text="localTime"></h2>
+            <img src="{{ asset('assets/icons/clock.svg') }}" alt="Clock" class="w-5 h-5 opacity-60">
+            <h2 class="text-xl" x-text="localTime"></h2>
         </div>
     </x-card>
 </div>

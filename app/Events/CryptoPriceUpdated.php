@@ -35,7 +35,7 @@ class CryptoPriceUpdated
     public function broadcastOn(): array
     {
         return [
-            new Channel('crypto.price'),
+            new Channel('prices'),
         ];
     }
 
@@ -44,11 +44,15 @@ class CryptoPriceUpdated
      * 
      * @return array<string, mixed>
      */
-    public function broadcastAs(): string
+    public function broadcastWith(): array
     {
-        Log::debug('Broadcasting crypto price update', $this->data);
-        $pair = Str::lower($this->data['pair']);
-        $exchange = Str::lower($this->data['exchange']);
-        return 'crypto.price.updated.' . $pair . '.' . $exchange;
+        return [
+            'pair' => $this->data['pair'],
+            'exchange' => $this->data['exchange'],
+            'average_price' => $this->data['average_price'],
+            'change_percentage' => $this->data['change_percentage'],
+            'change_direction' => $this->data['change_direction'],
+            'timestamp' => now()->toDateTimeString()
+        ];
     }
 }

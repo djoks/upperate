@@ -10,3 +10,10 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  */
 
 import './echo';
+
+/**
+ * Import moment.js
+ * @see https://momentjs.com/
+ */
+import moment from 'moment';
+window.moment = moment;

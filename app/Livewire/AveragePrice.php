@@ -9,31 +9,24 @@ use Illuminate\Support\Facades\Log;
 class AveragePrice extends Component
 {
     public $price = [];
-    protected $listeners = [];
+    public $pair;
+    public $exchange;
 
-    public function priceUpdated()
+    #[On('echo:prices,CryptoPriceUpdated')]
+    public function refreshPrice(array $eventData)
     {
-        //
+        $this->price = $eventData;
     }
 
     public function mount($price)
     {
         $this->price = $price;
-        $pair = strtolower($price['pair']);
-        $exchange = strtolower($price['exchange']);
-        $eventName = "echo:crypto.price";
-
-        // Dynamically register the listener for this event.
-        $this->listeners[$eventName] = 'handlePriceUpdate';
+        $this->pair = strtolower($price['pair']);
+        $this->exchange = strtolower($price['exchange']);
     }
+
     public function render()
     {
         return view('livewire.average-price');
-    }
-
-    public function handlePriceUpdate($data)
-    {
-        Log::debug('Price updated', $data);
-        $this->price = $data;
     }
 }
