@@ -43,4 +43,8 @@
 
         </x-table>
     </x-card>
+
+    <div>
+        <div class="text-center text-xs py-5">This is project was built by Philip.</div>
+    </div>
 </div>
