@@ -22,14 +22,30 @@ class CryptoPriceAggregatorCommand extends Command
     protected $description = 'Aggregate crypto prices and dispatch jobs at a configured interval.';
 
     /**
+     * Indicates if the command should stop.
+     *
+     * @var bool
+     */
+    protected $stop = false;
+
+    /**
      * Execute the console command.
      */
     public function handle()
     {
-        $interval = config('crypto.interval', 5);
-        $this->info("Running 'Crypto Price Aggregator' at an interval of: {$interval} seconds...");
+        pcntl_async_signals(true);
 
-        while (true) {
+        pcntl_signal(SIGINT, function () {
+            $this->stop = true;
+        });
+
+        pcntl_signal(SIGTERM, function () {
+            $this->stop = true;
+        });
+
+        $interval = config('crypto.interval', 5);
+
+        while (!$this->stop) {
             FetchCryptoPrices::dispatch();
             sleep($interval);
         }

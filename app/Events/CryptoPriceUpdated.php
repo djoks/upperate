@@ -13,11 +13,11 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class CryptoPriceUpdated
+class CryptoPriceUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $data;
+    public array $data;
 
     /**
      * Create a new event instance.
@@ -50,9 +50,9 @@ class CryptoPriceUpdated
             'pair' => $this->data['pair'],
             'exchange' => $this->data['exchange'],
             'average_price' => $this->data['average_price'],
-            'change_percentage' => $this->data['change_percentage'],
+            'price_change' => $this->data['price_change'],
             'change_direction' => $this->data['change_direction'],
-            'timestamp' => now()->toDateTimeString()
+            'updated_at' => $this->data['updated_at'],
         ];
     }
 }

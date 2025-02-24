@@ -8,7 +8,7 @@
 
     <!-- TABLE  -->
     <x-card>
-        <x-table :headers="$headers" :rows="$exchanges" expandable no-headers show-empty-text>
+        <x-table :headers="$headers" :rows="$exchanges" wire:model="expanded" expandable no-headers show-empty-text>
 
             @scope('cell_exchange', $exchanges)
             <div class="flex items-center space-x-2 capitalize">
@@ -24,12 +24,11 @@
                     <livewire:average-price :price="$price" :key="uniqid()" />
                     @endscope
                     @scope('cell_price_change', $price)
-                    <livewire:price-change :change="$price['price_change']" :key="uniqid()" />
-
+                    <livewire:price-change :price="$price" :key="uniqid()" />
                     @endscope
 
                     @scope('cell_updated_at', $price)
-                    <livewire:time-ago :date="$price['updated_at']" :key="uniqid()" />
+                    <livewire:date-changed :price="$price" :key="uniqid()" />
                     @endscope
                 </x-table>
             </div>

@@ -207,6 +207,8 @@ class CryptoPriceService implements CryptoPriceServiceContract
      */
     public function fetchAndSaveCryptoPrices(): void
     {
+        $promises[] = [];
+
         foreach ($this->exchanges as $exchange) {
             foreach ($this->pairs as $pair) {
                 $url = $this->buildApiQuery($pair, $exchange);
@@ -214,7 +216,7 @@ class CryptoPriceService implements CryptoPriceServiceContract
                 $promises[] = $this->fetchApiDataAsync($url)
                     ->then(function ($data) use ($exchange, $pair, $url) {
                         if ($data) {
-                            $this->processApiResponse($data, $exchange, $pair);
+                            $this->processApiResponse($data, $exchange);
                         } else {
                             Log::error("Failed to fetch data for exchange: {$exchange}, pair: {$pair} from URL: {$url}");
                         }

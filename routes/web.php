@@ -2,6 +2,7 @@
 
 use App\Livewire\Pages\HomePage;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,17 +17,29 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomePage::class);
 
-Route::get('/update', function () {
+/**
+ * Test Broadcast a random cryptocurrency price update.
+ */
+Route::get('/broadcast', function (Request $request) {
+    // 1. Random integer >= 1000
+    $averagePrice = rand(1000, 999999);
+
+    // 2. Random price change (positive or negative)
+    // For instance, pick a random integer between -100 and +100
+    $priceChange = rand(-100, 100);
+
+    // 3. Change direction based on sign of $priceChange
+    $changeDirection = $priceChange >= 0 ? 'upward' : 'downward';
+
     $data = [
-        'pair' => "BTCUSDC",
-        'exchange' => "binance",
-        'average_price' => 0,
-        'price_change' => 50,
-        'change_direction' => "upward",
+        'pair' => $request->get('pair', "BTC/USDT"),
+        'exchange' => $request->get('exchange', "Binance"),
+        'average_price' => $averagePrice,
+        'price_change' => $priceChange,
+        'change_direction' => $changeDirection,
         'created_at' => now(),
         'updated_at' => now(),
     ];
 
     event(new App\Events\CryptoPriceUpdated($data));
-    // App\Events\CryptoPriceUpdated::dispatch($data);
 });

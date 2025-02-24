@@ -17,3 +17,9 @@ import './echo';
  */
 import moment from 'moment';
 window.moment = moment;
+
+/**
+ * Import CountUp.js
+ */
+import { CountUp } from 'countup.js';
+window.CountUp = CountUp;

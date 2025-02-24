@@ -5,34 +5,32 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\Attributes\On;
 
-class AveragePrice extends Component
+class DateChanged extends Component
 {
     public $id;
-    public $price = [];
-    public $pair;
-    public $exchange;
+    public $price;
+    public $date;
 
     #[On('echo:prices,CryptoPriceUpdated')]
-    public function updatePrice(array $eventData)
+    public function updateChange(array $eventData)
     {
         if ($this->price['exchange'] !== $eventData['exchange'] || $this->price['pair'] !== $eventData['pair']) {
             return;
         }
 
-        $this->price = $eventData;
-        $this->dispatch('price-updated-' . $this->id, ['newPrice' => $eventData['average_price']])->self();
+        $this->date = $eventData['updated_at'];
+        $this->dispatch('date-updated-' . $this->id, ['newDate' => $eventData['updated_at']])->self();
     }
 
     public function mount($price)
     {
         $this->id = uniqId();
         $this->price = $price;
-        $this->pair = strtolower($price['pair']);
-        $this->exchange = strtolower($price['exchange']);
+        $this->date = $price['updated_at'];
     }
 
     public function render()
     {
-        return view('livewire.average-price');
+        return view('livewire.date-changed');
     }
 }
