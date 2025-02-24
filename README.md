@@ -18,6 +18,7 @@ Welcome to the Upperate project. This guide explains how to set up, configure, a
 11. [Deployment](#deployment)
 12. [Project Structure](#project-structure)
 13. [Cross-Platform Setup Script](#cross-platform-setup-script)
+14. [Testing Broadcast Events](#testing-broadcast-events)
 
 ---
 
@@ -294,3 +295,91 @@ What the Script Does:
 -   Initialises the Database: Waits for the database connection to be ready and then runs migrations.
 
 This unified script ensures a consistent setup experience across all platforms, making it easy to get started with the project.
+
+## Testing Broadcast Events
+
+The Upperate application dispatches real-time cryptocurrency price updates via broadcast events. To test this functionality, a dedicated route is provided that simulates a price update.
+
+### Broadcast Test Route
+
+The `/broadcast` route generates a random cryptocurrency price update and dispatches the `CryptoPriceUpdated` event. Here's the relevant route code:
+
+```php
+Route::get('/broadcast', function (Request $request) {
+    // 1. Generate a random average price (integer not less than 1000)
+    $averagePrice = rand(1000, 999999);
+
+    // 2. Generate a random price change (can be positive or negative)
+    $priceChange = rand(-100, 100);
+
+    // 3. Determine change direction based on the sign of $priceChange
+    $changeDirection = $priceChange >= 0 ? 'upward' : 'downward';
+
+    $data = [
+        'pair' => $request->get('pair', "BTCUSDC"),
+        'exchange' => $request->get('exchange', "binance"),
+        'average_price' => $averagePrice,
+        'price_change' => $priceChange,
+        'change_direction' => $changeDirection,
+        'created_at' => now(),
+        'updated_at' => now(),
+    ];
+
+    event(new App\Events\CryptoPriceUpdated($data));
+});
+```
+
+### How to Test
+
+1. **Start the Application**
+
+    Make sure your Laravel application is running. If you're using Sail, you can start it with:
+
+    ```bash
+    sail up -d
+    ```
+
+2. **Trigger the Broadcast**
+
+    Open your browser and navigate to:
+
+    ```
+    http://localhost/broadcast
+    ```
+
+    Alternatively, you can test the route using `curl`:
+
+    ```bash
+    curl http://localhost/broadcast
+    ```
+
+3. **Observe the Broadcast**
+
+    - **Response:** Although the route does not return any data by default, you can check your application's logs or the front-end (if it is listening for broadcast events) to verify that the event has been dispatched.
+    - **Front-End:** If you have set up real-time listeners (for example, with Laravel Echo or Reverb) in your front-end, you should see the UI update according to the new random values.
+
+### Expected Data Format
+
+When the event is dispatched, the payload will look similar to this:
+
+```json
+{
+    "pair": "BTCUSDC",
+    "exchange": "binance",
+    "average_price": 123456,
+    "price_change": 50,
+    "change_direction": "upward",
+    "created_at": "2025-02-24T12:34:56Z",
+    "updated_at": "2025-02-24T12:34:56Z"
+}
+```
+
+### Troubleshooting
+
+-   **Event Listener Not Firing:**  
+    Ensure that your front-end is correctly subscribed to the broadcast channel and that the broadcasting driver (e.g., Reverb) is properly configured and running.
+
+-   **No Visible Updates:**  
+    Check your browser's developer console and network panel to verify that the WebSocket connection is established and that events are being received.
+
+This section should help you and other developers quickly verify that the broadcast functionality is working as expected.
