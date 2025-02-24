@@ -1,21 +1,38 @@
-<div wire:poll.1000ms="updateTime" x-data="{ 
-        currentIso: @entangle('currentTime'),
-        localTime: new Date(@entangle('currentTime')).toLocaleTimeString()
-    }" x-init="
-        // Update localTime when currentIso changes
-        $watch('currentIso', (value) => { 
-            localTime = new Date(value).toLocaleTimeString(); 
-        });
-        // Update localTime every second for smooth transitions
-        setInterval(() => { 
-            localTime = new Date(currentIso).toLocaleTimeString(); 
-        }, 1000);
-    " class="p-4">
+<div wire:poll.1000ms="updateTime" x-data="{
+         currentIso: @entangle('currentTime'),
+         localHours: '00',
+         localMinutes: '00',
+         localSeconds: '00',
+         updateClock() {
+             const d = new Date(this.currentIso);
+             const formatter = new Intl.DateTimeFormat(undefined, {
+                 hour: '2-digit',
+                 minute: '2-digit',
+                 second: '2-digit'
+             });
+             const parts = formatter.formatToParts(d);
+             this.localHours = parts.find(part => part.type === 'hour')?.value || '00';
+             this.localMinutes = parts.find(part => part.type === 'minute')?.value || '00';
+             this.localSeconds = parts.find(part => part.type === 'second')?.value || '00';
+         }
+     }" x-init="
+         updateClock();
+         $watch('currentIso', () => { updateClock(); });
+         setInterval(() => { updateClock(); }, 1000);
+     " class="flex">
+    <x-card class="w-48 self-center rounded-box bg-transparent items-center justify-center">
+        <div class="flex justify-center items-center gap-2">
+            <div class="relative overflow-hidden bg-black/50 rounded-lg p-4 w-[50px] text-base font-bold hover:scale-105 transition-transform duration-200 ease-out shadow-[0_8px_15px_rgba(0,0,0,0.3)]" id="hours" x-text="localHours">
 
-    <x-card class="w-48 rounded-box items-center justify-center">
-        <div class="flex space-x-2 items-center text-center">
-            <img src="{{ asset('assets/icons/clock.svg') }}" alt="Clock" class="w-5 h-5 opacity-60">
-            <h2 class="text-xl" x-text="localTime"></h2>
+                <div class="absolute bottom-[-25px] left-0 w-full text-base text-[0.8rem] uppercase">Hours</div>
+            </div>
+            <div class="relative overflow-hidden bg-black/50 rounded-lg p-4 w-[50px] text-base font-bold hover:scale-105 transition-transform duration-200 ease-out shadow-[0_8px_15px_rgba(0,0,0,0.3)]" id="hours" x-text="localMinutes">
+                <div class="absolute bottom-[-25px] left-0 w-full text-base text-[0.8rem] uppercase">Minutes</div>
+            </div>
+            <div class="relative overflow-hidden bg-black/50 rounded-lg p-4 w-[50px] text-base font-bold hover:scale-105 transition-transform duration-200 ease-out shadow-[0_8px_15px_rgba(0,0,0,0.3)]" id="hours" x-text="localSeconds">
+
+                <div class="absolute bottom-[-25px] left-0 w-full text-base text-[0.8rem] uppercase">Seconds</div>
+            </div>
         </div>
     </x-card>
 </div>

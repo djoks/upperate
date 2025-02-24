@@ -9,7 +9,7 @@ class HomePage extends Component
 {
     protected CryptoPriceServiceContract $cryptoPriceService;
 
-    public array $expanded = [0, 1];
+    public array $expanded = [];
 
     public array $headers = [
         ['key' => 'exchange', 'label' => 'Exchange'],
@@ -28,6 +28,7 @@ class HomePage extends Component
     {
         $this->cryptoPriceService = app(CryptoPriceServiceContract::class);
         $this->exchanges = $this->cryptoPriceService->getCryptoPrices();
+        $this->expanded = $this->cryptoPriceService->getExchanges();
     }
 
     public function render()

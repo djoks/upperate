@@ -10,7 +10,6 @@
             , date: value
             , dateDisplay: ''
             , init() {
-                console.log('init', this.date);
                 setInterval(() => {
                     this.dateDisplay = moment(this.date).fromNow();
                     this.$refs.date.innerText = this.dateDisplay;
