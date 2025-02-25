@@ -3,6 +3,46 @@
 use App\Models\CryptoPrice;
 use Illuminate\Support\Facades\Http;
 
+/**
+ * CryptoPriceService Test Suite
+ *
+ * This test suite validates the functionality of the CryptoPriceService class.
+ *
+ * Overview of Tests:
+ *
+ * 1. computes the average price correctly:
+ *    - Verifies that the computeAveragePrice method correctly calculates the average using 'lowest' and 'highest' values.
+ *
+ * 2. returns the configured pairs:
+ *    - Confirms that getPairs returns the expected list of cryptocurrency pairs.
+ *
+ * 3. returns the configured exchanges:
+ *    - Ensures that getExchanges returns the expected list of exchange names.
+ *
+ * 4. builds the correct API query URL:
+ *    - Checks that buildApiQuery constructs the correct API URL based on a given pair and exchange.
+ *
+ * 5. retrieves all crypto prices from the repository:
+ *    - Validates that getCryptoPrices correctly retrieves data by calling the repository's getLatestRecordsGroupedByExchange method.
+ *
+ * 6. fetches API data successfully:
+ *    - Tests that the fetchApiData method (made accessible via reflection) correctly processes a fake HTTP response.
+ *
+ * 7. processes API response and saves new record when price changes:
+ *    - Ensures that processApiResponse correctly identifies a price change, computes the new average
+ *      and price change, determines the correct change direction, and saves a new record.
+ *
+ * 8. skips saving when no price change is detected:
+ *    - Validates that when the API response indicates no change in the average price and percentage,
+ *      the system properly bypasses the save operation.
+ *
+ * Additional Notes:
+ *
+ * - The tests leverage the Mockery framework to simulate the behavior of the CryptoPriceRepositoryContract.
+ * - Reflection is used to access and test otherwise inaccessible internal methods.
+ * - The tests ensure that both the API interaction and internal logic for processing crypto data function as expected.
+ */
+
 beforeEach(function () {
     /** @var \Mockery\LegacyMockInterface|\Mockery\MockInterface|\App\Contracts\CryptoPriceRepositoryContract $repo */
     $this->repo = Mockery::mock(App\Contracts\CryptoPriceRepositoryContract::class);
