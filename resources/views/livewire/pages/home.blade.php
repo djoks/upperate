@@ -46,6 +46,6 @@
 
     <!-- FOOTER -->
     <div>
-        <div class="text-center text-xs py-5">This is project was built by Philip.</div>
+        <div class="text-center text-xs py-5">This project was built by Philip.</div>
     </div>
 </div>
