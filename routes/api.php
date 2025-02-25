@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CryptoPriceController;
 use Illuminate\Http\Request;
+use App\Events\CryptoPriceUpdated;
 
-Route::prefix('v1')->middleware('throttle:10,1')->group(function () {
+Route::prefix('v1')->middleware('throttle:60,1')->group(function () {
     /**
      * Get the latest cryptocurrency prices.
      */
@@ -15,11 +16,11 @@ Route::prefix('v1')->middleware('throttle:10,1')->group(function () {
      */
     Route::get('/broadcast', function (Request $request) {
         // 1. Random integer >= 1000
-        $averagePrice = rand(1000, 999999);
+        $averagePrice = mt_rand(1000, 999999);
 
         // 2. Random price change (positive or negative)
         // For instance, pick a random integer between -100 and +100
-        $priceChange = rand(-100, 100);
+        $priceChange = mt_rand(-100, 100);
 
         // 3. Change direction based on sign of $priceChange
         $changeDirection = $priceChange >= 0 ? 'upward' : 'downward';
@@ -34,7 +35,8 @@ Route::prefix('v1')->middleware('throttle:10,1')->group(function () {
             'updated_at' => now(),
         ];
 
-        event(new App\Events\CryptoPriceUpdated($data));
+        event(new CryptoPriceUpdated($data));
+        return response()->json(['status' => 'broadcasted']);
     });
 });
 
