@@ -2,11 +2,12 @@
 
 namespace App\Providers;
 
-use App\Contracts\CryptoPriceRepositoryContract;
-use App\Contracts\CryptoPriceServiceContract;
-use App\Repositories\CryptoPriceRepository;
 use App\Services\CryptoPriceService;
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\CryptoPriceRepository;
+use App\Contracts\CryptoPriceServiceContract;
+use App\Contracts\CryptoPriceRepositoryContract;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -24,6 +25,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        JsonResource::withoutWrapping();
     }
 }

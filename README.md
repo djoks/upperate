@@ -18,7 +18,8 @@ Welcome to the Upperate project. This guide explains how to set up, configure, a
 11. [Deployment](#deployment)
 12. [Project Structure](#project-structure)
 13. [Cross-Platform Setup Script](#cross-platform-setup-script)
-14. [Testing Broadcast Events](#testing-broadcast-events)
+14. [API Documentation](#api-documentation)
+15. [OpenAPI v3 Specification](#openapi-v3-pecification)
 
 ---
 
@@ -296,90 +297,188 @@ What the Script Does:
 
 This unified script ensures a consistent setup experience across all platforms, making it easy to get started with the project.
 
-## Testing Broadcast Events
+## API Documentation
 
-The Upperate application dispatches real-time cryptocurrency price updates via broadcast events. To test this functionality, a dedicated route is provided that simulates a price update.
+The Upperate application provides a REST API under the base URL `/api/v1/`. Two important endpoints are provided for testing and retrieving real-time cryptocurrency price data.
 
-### Broadcast Test Route
+### 1. Broadcast Test Endpoint
 
-The `/broadcast` route generates a random cryptocurrency price update and dispatches the `CryptoPriceUpdated` event. Here's the relevant route code:
+This endpoint is used to simulate a cryptocurrency price update by dispatching a `CryptoPriceUpdated` event. Use this endpoint to verify that your broadcast listeners are working correctly.
 
-```php
-Route::get('/broadcast', function (Request $request) {
-    // 1. Generate a random average price (integer not less than 1000)
-    $averagePrice = rand(1000, 999999);
-
-    // 2. Generate a random price change (can be positive or negative)
-    $priceChange = rand(-100, 100);
-
-    // 3. Determine change direction based on the sign of $priceChange
-    $changeDirection = $priceChange >= 0 ? 'upward' : 'downward';
-
-    $data = [
-        'pair' => $request->get('pair', "BTCUSDC"),
-        'exchange' => $request->get('exchange', "binance"),
-        'average_price' => $averagePrice,
-        'price_change' => $priceChange,
-        'change_direction' => $changeDirection,
-        'created_at' => now(),
-        'updated_at' => now(),
-    ];
-
-    event(new App\Events\CryptoPriceUpdated($data));
-});
+#### Endpoint
+```
+GET /api/v1/broadcast
 ```
 
-### How to Test
+#### Description
+- **Purpose:** Generates a random cryptocurrency price update.
+- **Query Parameters:**
+  - `pair` (string, optional): The cryptocurrency pair (default: `"BTCUSDC"`).
+  - `exchange` (string, optional): The exchange name (default: `"binance"`).
 
-1. **Start the Application**
+#### How to Test
+1. **Start the Application:**  
+   Make sure your Laravel application is running (for example, using Sail):
+   ```bash
+   sail up -d
+   ```
 
-    Make sure your Laravel application is running. If you're using Sail, you can start it with:
+2. **Trigger the Broadcast:**  
+   Open your browser or use `curl` to hit:
+   ```
+   http://localhost/api/v1/broadcast
+   ```
+   For example, with curl:
+   ```bash
+   curl http://localhost/api/v1/broadcast
+   ```
 
-    ```bash
-    sail up -d
-    ```
+3. **Observe the Results:**  
+   Although this endpoint does not return a body, you can check your logs or your front-end (if it’s listening for the event) to verify that the broadcast was triggered.
 
-2. **Trigger the Broadcast**
+### 2. Crypto Prices Endpoint
 
-    Open your browser and navigate to:
+This endpoint returns the latest cryptocurrency prices grouped by exchange. It is used by the front-end to display real-time pricing information.
 
-    ```
-    http://localhost/broadcast
-    ```
+#### Endpoint
+```
+GET /api/v1/crypto-prices
+```
 
-    Alternatively, you can test the route using `curl`:
-
-    ```bash
-    curl http://localhost/broadcast
-    ```
-
-3. **Observe the Broadcast**
-
-    - **Response:** Although the route does not return any data by default, you can check your application's logs or the front-end (if it is listening for broadcast events) to verify that the event has been dispatched.
-    - **Front-End:** If you have set up real-time listeners (for example, with Laravel Echo or Reverb) in your front-end, you should see the UI update according to the new random values.
-
-### Expected Data Format
-
-When the event is dispatched, the payload will look similar to this:
-
+#### Sample Response
 ```json
-{
-    "pair": "BTCUSDC",
-    "exchange": "binance",
-    "average_price": 123456,
-    "price_change": 50,
-    "change_direction": "upward",
-    "created_at": "2025-02-24T12:34:56Z",
-    "updated_at": "2025-02-24T12:34:56Z"
-}
+[
+    {
+        "exchange": "Binance",
+        "prices": [
+            {
+                "pair": "BTCUSDC",
+                "exchange": "Binance",
+                "average_price": "92,674.14",
+                "price_change": "0.13210362",
+                "change_direction": "upward",
+                "created_at": "2025-02-25 00:25:41",
+                "updated_at": "2025-02-25 00:25:41"
+            },
+            {
+                "pair": "BTCUSDT",
+                "exchange": "Binance",
+                "average_price": "92,693.58",
+                "price_change": "0.33883462",
+                "change_direction": "downward",
+                "created_at": "2025-02-25 00:53:47",
+                "updated_at": "2025-02-25 00:53:47"
+            }
+        ]
+    },
+    {
+        "exchange": "Huobi",
+        "prices": [
+            {
+                "pair": "BTCUSDC",
+                "exchange": "Huobi",
+                "average_price": "92,688.55",
+                "price_change": "0.48528242",
+                "change_direction": "downward",
+                "created_at": "2025-02-25 00:53:46",
+                "updated_at": "2025-02-25 00:53:46"
+            },
+            {
+                "pair": "BTCUSDT",
+                "exchange": "Huobi",
+                "average_price": "99,154.33",
+                "price_change": "0.25418225",
+                "change_direction": "upward",
+                "created_at": "2025-02-25 00:25:48",
+                "updated_at": "2025-02-25 00:25:48"
+            }
+        ]
+    }
+]
 ```
 
-### Troubleshooting
+---
 
--   **Event Listener Not Firing:**  
-    Ensure that your front-end is correctly subscribed to the broadcast channel and that the broadcasting driver (e.g., Reverb) is properly configured and running.
+## OpenAPI v3 Specification
 
--   **No Visible Updates:**  
-    Check your browser's developer console and network panel to verify that the WebSocket connection is established and that events are being received.
+Below is an excerpt of an OpenAPI v3 specification that documents these endpoints and describes each field in detail.
 
-This section should help you and other developers quickly verify that the broadcast functionality is working as expected.
+```yaml
+openapi: 3.0.0
+info:
+  title: Upperate API
+  version: 1.0.0
+paths:
+  /api/v1/broadcast:
+    get:
+      summary: Test Broadcast Endpoint
+      description: Generates a random cryptocurrency price update and dispatches a CryptoPriceUpdated event.
+      parameters:
+        - in: query
+          name: pair
+          schema:
+            type: string
+          description: The cryptocurrency pair identifier (default: "BTCUSDC").
+        - in: query
+          name: exchange
+          schema:
+            type: string
+          description: The exchange name (default: "binance").
+      responses:
+        '200':
+          description: Broadcast event dispatched successfully.
+  /api/v1/crypto-prices:
+    get:
+      summary: Retrieve Latest Cryptocurrency Prices
+      description: Returns a list of the latest cryptocurrency price records grouped by exchange.
+      responses:
+        '200':
+          description: A JSON array of cryptocurrency price data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    exchange:
+                      type: string
+                      description: The name of the cryptocurrency exchange.
+                    prices:
+                      type: array
+                      description: A list of price records for the exchange.
+                      items:
+                        type: object
+                        properties:
+                          pair:
+                            type: string
+                            description: The cryptocurrency pair identifier.
+                          exchange:
+                            type: string
+                            description: The exchange name (should match the parent exchange field).
+                          average_price:
+                            type: string
+                            description: The average price formatted as a string.
+                          price_change:
+                            type: string
+                            description: The price change, which may be positive or negative.
+                          change_direction:
+                            type: string
+                            description: The direction of price change ("upward" or "downward").
+                          created_at:
+                            type: string
+                            format: date-time
+                            description: The timestamp when the record was created.
+                          updated_at:
+                            type: string
+                            format: date-time
+                            description: The timestamp when the record was last updated.
+```
+
+### Additional Notes
+
+- **Base URL:** All endpoints are prefixed with `/api/v1/`.
+- **Testing Broadcasts:** Use the `/api/v1/broadcast` route to simulate real-time updates.
+- **Data Fields:** Each field is documented in the OpenAPI specification to ensure clarity on expected types and values.
+
+This documentation should help developers quickly understand and test the API functionality in Upperate.
